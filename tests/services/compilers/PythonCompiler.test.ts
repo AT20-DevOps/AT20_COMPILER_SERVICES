@@ -26,7 +26,7 @@ describe('Test Python Compiler', () => {
     expected output. */
     test('Instance a new python Compiler success', () => {
         const compiler = new PythonCompiler();
-        const expected =  compiler.run(path.join(filePath, 'Example_python.py', '3'));
+        const expected =  compiler.run(path.join(filePath, 'Example_python.py'), '3');
         const result = {"stderr": "", "stdout": "Hello world! (Python)\n"};
         expect(expected).toStrictEqual(result);
     });
