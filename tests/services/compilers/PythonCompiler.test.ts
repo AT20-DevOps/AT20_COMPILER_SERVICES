@@ -13,7 +13,7 @@ with Jalasoft
 import CompilerException from "../../../src/common/compilerException";
 import PythonCompiler from "../../../src/services/compilers/python/PythonCompiler";
 
-const filePath = './examples/';
+const filePath = 'examples/';
 
 describe('Test Python Compiler', () => {
 
