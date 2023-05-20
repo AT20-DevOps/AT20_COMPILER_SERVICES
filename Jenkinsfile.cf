@@ -4,7 +4,7 @@ pipeline {
         stage('Test') {
             agent {
                 docker {
-                    image 'crgv/node-18-alpine3.16-cb'
+                    image 'charlesfc001/node18-alpine3.16-cb'
                 }
             }
             steps {
