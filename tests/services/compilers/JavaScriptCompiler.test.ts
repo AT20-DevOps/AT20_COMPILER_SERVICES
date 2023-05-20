@@ -13,7 +13,7 @@ with Jalasoft
 import CompilerException from "../../../src/common/compilerException";
 import JavaCompiler from "../../../src/services/compilers/JavaScriptCompiler";
 
-const filePath = '/home/charles/Documentos/at20/development/AT20_COMPILER_SERVICE_/src/services/compilers/compiled_files/';
+const filePath = './examples/';
 
 describe('Test JavaScript Compiler', () => {
 

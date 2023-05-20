@@ -13,7 +13,7 @@ with Jalasoft
 import CompilerException from "../../../src/common/compilerException";
 import CSharpCompiler from "../../../src/services/compilers/CSharpCompiler";
 
-const filePath = '/home/charles/Documentos/at20/development/AT20_COMPILER_SERVICE_/src/services/compilers/compiled_files/';
+const filePath = './examples/';
 
 describe('Test CSharp Compiler', () => {
 
