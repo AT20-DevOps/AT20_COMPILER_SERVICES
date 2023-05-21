@@ -1,6 +1,6 @@
 FROM node:18-alpine3.16
 
-# Install necessary dependencies
+# Install necessary dependencies for Javascript, Java, Python and C#
 RUN apk update && \
     apk add --no-cache \
         build-base \
