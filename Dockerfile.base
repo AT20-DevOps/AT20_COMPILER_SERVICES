@@ -1,16 +1,16 @@
-FROM node:18-alpine3.16 
+FROM node:18-alpine3.16
 
-# Install necessary dependencies for Javascript, Java, Python and C# 
-RUN apk update && \ 
-    apk add --no-cache \ 
-        build-base \ 
-        nodejs \ 
-        npm \ 
-        openjdk11 \ 
-        python3 \ 
-        py3-pip && \ 
-    apk add --no-cache mono --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing && \ 
-    apk add --no-cache --virtual=.build-dependencies ca-certificates && \ 
-    cert-sync /etc/ssl/certs/ca-certificates.crt && \ 
-    apk del .build-dependencies && \ 
-    pip3 install --no-cache --upgrade pip setuptools 
+# Install necessary dependencies for Javascript, Java, Python and C#
+RUN apk update && \
+    apk add --no-cache \
+        build-base \
+        nodejs \
+        npm \
+        openjdk11 \
+        python3 \
+        py3-pip && \
+    apk add --no-cache mono --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing && \
+    apk add --no-cache --virtual=.build-dependencies ca-certificates && \
+    cert-sync /etc/ssl/certs/ca-certificates.crt && \
+    apk del .build-dependencies && \
+    pip3 install --no-cache --upgrade pip setuptools
