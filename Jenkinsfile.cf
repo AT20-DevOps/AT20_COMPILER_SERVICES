@@ -8,9 +8,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'npm install'
-                sh 'npm install --save-dev babel-jest @babel/core @babel/preset-env'
-                sh 'npm install --save-dev @babel/preset-typescript'
+                sh 'npm install'                
                 sh 'npm run test'
             }
         }
