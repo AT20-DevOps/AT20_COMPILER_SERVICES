@@ -2,4 +2,4 @@
 /src/services/compilers/temp_saved_files
 /coverage
 src/services/compilers/compiled_files/
-tests/report
+tests/report/report.html
