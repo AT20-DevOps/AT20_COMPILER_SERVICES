@@ -8,6 +8,16 @@
     "dev": "ts-node-dev index.ts",
     "test": "jest"
   },
+  "jest": {
+    "verbose": true,
+    "reporters": [
+      "default",
+      ["./node_modules/jest-html-reporter", {
+          "pageTitle": "Report",
+          "outputPath": "./tests/report/report.html"
+      }]
+    ]
+  },
   "author": "Jhoel Flores",
   "license": "ISC",
   "dependencies": {
@@ -26,6 +36,7 @@
     "@types/node": "^18.15.11",
     "babel-jest": "^29.5.0",
     "jest": "^29.5.0",
+    "jest-html-reporter": "^3.9.0",
     "nodemon": "^2.0.21",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
