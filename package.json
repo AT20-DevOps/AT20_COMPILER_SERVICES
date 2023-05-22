@@ -8,9 +8,6 @@
     "dev": "ts-node-dev index.ts",
     "test": "jest"
   },
-  "jest": {
-    "collectCoverage": true
-  },
   "author": "Jhoel Flores",
   "license": "ISC",
   "dependencies": {
