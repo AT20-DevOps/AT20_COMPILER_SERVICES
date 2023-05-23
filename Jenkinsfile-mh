@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    enviroment {
+        DOCKER_PASS = credentials('docker_pass_mh')
+    }
     stages {
         stage('Test') {
             agent {docker 'marseonji/node-18-alpine3.16-cb'}
@@ -20,7 +23,7 @@ pipeline {
         }
         stage('Publish') {
             steps {
-                sh 'echo docker login -u marseonji -p'
+                sh 'docker login -u marseonji -p ${DOCKER_PASS}'
                 sh 'echo docker tag at20_compiler_services marseonji/at20_compiler_service'
                 sh 'echo docker push marseonji/at20_compiler_service'
             }
