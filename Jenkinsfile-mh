@@ -13,5 +13,17 @@ pipeline {
                 }
             }
         }
+        stage('Package') {
+            steps {
+                sh 'docker build -t at20_compiler_services'
+            }
+        }
+        stage('Publish') {
+            steps {
+                sh 'echo docker login -u marseonji -p'
+                sh 'echo docker tag at20_compiler_services marseonji/at20_compiler_service'
+                sh 'echo docker push marseonji/at20_compiler_service'
+            }
+        }
     }
 }
