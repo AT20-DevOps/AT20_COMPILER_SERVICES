@@ -28,8 +28,8 @@ pipeline {
         stage('Publish') {
             steps {
                 sh 'docker login -u charlesfc001 -p ${DOCKER_PASS}'
-                sh 'echo docker tag compiler charlesfc001/compiler'
-                sh 'echo docker push charlesfc001/compiler'
+                sh 'docker tag compiler charlesfc001/compiler'
+                sh 'docker push charlesfc001/compiler'
             }
         }
     } 
