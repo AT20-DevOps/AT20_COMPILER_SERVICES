@@ -24,8 +24,8 @@ pipeline {
         stage('Publish') {
             steps {
                 sh 'docker login -u marseonji -p ${DOCKER_PASS}'
-                sh 'echo docker tag at20_compiler_services marseonji/at20_compiler_service'
-                sh 'echo docker push marseonji/at20_compiler_service'
+                sh 'docker tag at20_compiler_services marseonji/at20_compiler_service'
+                sh 'docker push marseonji/at20_compiler_service'
             }
         }
     }
