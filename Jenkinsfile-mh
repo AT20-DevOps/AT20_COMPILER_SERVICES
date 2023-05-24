@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        DOCKER_PASS = credentials('docker_pass_mh')
+    }
     stages {
         stage('Test') {
             agent {docker 'marseonji/node-18-alpine3.16-cb'}
@@ -11,6 +14,18 @@ pipeline {
                 always {
                     archiveArtifacts artifacts: 'tests/report/report.html', followSymlinks: false
                 }
+            }
+        }
+        stage('Package') {
+            steps {
+                sh 'docker build -t at20_compiler_services .'
+            }
+        }
+        stage('Publish') {
+            steps {
+                sh 'docker login -u marseonji -p ${DOCKER_PASS}'
+                sh 'docker tag at20_compiler_services marseonji/at20_compiler_service'
+                sh 'docker push marseonji/at20_compiler_service'
             }
         }
     }
