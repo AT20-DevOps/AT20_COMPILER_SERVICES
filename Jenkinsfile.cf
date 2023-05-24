@@ -1,5 +1,8 @@
 pipeline { 
-    agent any 
+    agent any
+    environment {
+        DOCKER_PASS = credentials('docker_pass')
+    }
     stages { 
         stage('Test') { 
             agent { 
@@ -16,6 +19,18 @@ pipeline {
                     archiveArtifacts artifacts: 'tests/report/report.html', followSymlinks: false
                 }
             }
-        } 
+        }
+        stage('Package') {
+            steps {
+                sh 'docker build -t compiler .'
+            }
+        }
+        stage('Publish') {
+            steps {
+                sh 'docker login -u charlesfc001 -p ${DOCKER_PASS}'
+                sh 'docker tag compiler charlesfc001/compiler'
+                sh 'docker push charlesfc001/compiler'
+            }
+        }
     } 
 } 
