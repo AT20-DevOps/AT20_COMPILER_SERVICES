@@ -21,7 +21,6 @@ pipeline {
                 sh 'docker build -t at20_compiler_services .'
             }
         }
-        
         stage('Publish') {
             steps {
                 sh 'docker login -u marseonji -p ${DOCKER_PASS}'
