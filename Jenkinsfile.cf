@@ -56,5 +56,17 @@ pipeline {
                 sh 'docker push charlesfc001/compiler'
             }
         }
+        stage('DeployToDev') {
+            steps {
+                sh 'docker compose up -d'
+            }
+        }
+        post {
+            always {
+                // sh 'echo clean dangling images'
+                // sh 'docker image prune -a'
+                sh 'docker rmi $(docker images -f "dangling=true" -q)'
+            }
+        }
     } 
 } 
