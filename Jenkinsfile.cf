@@ -61,12 +61,12 @@ pipeline {
                 sh 'docker compose up -d'
             }
         }
-        post {
-            always {
+        // post {
+        //     always {
                 // sh 'echo clean dangling images'
                 // sh 'docker image prune -a'
-                sh 'docker rmi $(docker images -f "dangling=true" -q)'
-            }
-        }
+        //         sh 'docker rmi $(docker images -f "dangling=true" -q)'
+        //     }
+        // }
     } 
 } 
