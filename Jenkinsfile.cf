@@ -58,7 +58,7 @@ pipeline {
         }
         stage('DeployToDev') {
             steps {
-                sh 'docker compose up -d'
+                sh 'docker compose -f docker-compose.cj.yaml up -d'
             }
         }
         // post {
