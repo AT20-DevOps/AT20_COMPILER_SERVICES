@@ -1,6 +1,7 @@
 version: '3.7'
+
 services:
-  compilerApp:
+  webApp:
     image: marseonji/at20_compiler_service
-    ports: 
-      - '8081:9292'
+    ports:
+      - '8081:9292
