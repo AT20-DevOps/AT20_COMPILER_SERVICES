@@ -1,13 +1,8 @@
 version: '3.7'
 services:
-  compiler_service:
-    env_file:
-      -  .env 
+  compilerApp:
     image: marseonji/at20_compiler_service
     container_name: $COMPILER_SERVICE_NAME
     ports: 
-      - $COMPILER_SERVICE_EXPOSE_PORT:$COMPILER_SERVICE_PORT
-    expose: \
-      - $COMPILER_SERVICE_EXPOSE_PORT
-    environment:
-      PORT: $COMPILER_SERVICE_PORT
+      - '8081:9292'
+   
