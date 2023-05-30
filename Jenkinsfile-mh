@@ -54,7 +54,7 @@ pipeline {
         }
         stage('DeployToDev') {
             steps {
-                sh 'docker-compose -f docker-compose.mh.yaml up -d'
+                sh 'docker compose -f docker-compose.mh.yaml up -d'
             }
         }
     }
