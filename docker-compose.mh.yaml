@@ -4,4 +4,4 @@ services:
   webApp:
     image: marseonji/at20_compiler_service
     ports:
-      - '8081:9292
+      - '8081:9292'
