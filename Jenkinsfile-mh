@@ -52,5 +52,16 @@ pipeline {
                 sh 'docker push marseonji/at20_compiler_service'
             }
         }
+        stage('DeployToDev') {
+            steps {
+                sh 'docker compose -f docker-compose.mh.yaml up -d'
+            }
+        }
+    }
+    post {
+        always {
+            sh 'docker rmi $(docker images -f "dangling=true" -q)'
+            sh 'docker system prune -a'
+        }
     }
 }
