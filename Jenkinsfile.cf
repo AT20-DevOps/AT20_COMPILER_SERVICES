@@ -58,15 +58,15 @@ pipeline {
         }
         stage('DeployToDev') {
             steps {
-                sh 'docker compose -f docker-compose.cj.yaml up -d'
+                sh 'docker-compose -f docker-compose.cj.yaml up -d'
             }
         }
-        // post {
-        //     always {
-                // sh 'echo clean dangling images'
-                // sh 'docker image prune -a'
-        //         sh 'docker rmi $(docker images -f "dangling=true" -q)'
-        //     }
-        // }
     } 
+    post {
+        always {
+            // sh 'echo clean dangling images'
+            // sh 'docker image prune -a'
+            sh 'docker rmi $(docker images -f "dangling=true" -q)'
+        }
+    }
 } 
