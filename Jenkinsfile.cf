@@ -65,7 +65,7 @@ pipeline {
         stage('DeployToAUTO') {
             steps {
                 sh 'scp docker-compose.cj.yaml $TARGET_HOST:docker-compose.yml'
-                sh 'DOCKER_HOST=ssh://$TARGET_HOST docker-compose up -d'
+                sh 'DOCKER_HOST=ssh://$TARGET_HOST docker-compose -f /home/vagrant/docker-compose.yml up -d'
             }
         }
     } 
