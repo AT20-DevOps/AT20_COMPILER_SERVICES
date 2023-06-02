@@ -2,6 +2,6 @@ version: '3.7'
 
 services:
   webApp:
-    image: charlesfc001/compiler:${TAG_VERSION}
+    image: 'charlesfc001/compiler:${TAG_VERSION}'
     ports:
       - '8081:9292'
