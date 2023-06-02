@@ -2,6 +2,6 @@ version: '3.7'
 
 services:
   webApp:
-    image: marseonji/at20_compiler_service
+    image: marseonji/at20_compiler_service:${TAG_VERSION}
     ports:
       - '8081:9292'
