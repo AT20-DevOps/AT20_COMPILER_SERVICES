@@ -3,7 +3,8 @@ pipeline {
     environment {
         DOCKER_PASS = credentials('docker_pass')
         SONAR_TOKEN = credentials('sonar_token')
-        TARGET_HOST = '192.168.56.71'
+        TARGET_HOST = '192.168.56.71'        
+        GIT_COMMIT_HASH = sh (script: "git rev-parse --short HEAD", returnStdout: true).trim()
     }
     stages { 
         stage('Test') { 
@@ -52,27 +53,27 @@ pipeline {
         }
         stage('Publish') {
             steps {
+                // sh 'export TAG=$(git log --pretty=format:'%h' -n 1)'
                 sh 'docker login -u charlesfc001 -p ${DOCKER_PASS}'
-                sh 'docker tag compiler charlesfc001/compiler'
-                sh 'docker push charlesfc001/compiler'
+                sh 'docker tag compiler charlesfc001/compiler:${GIT_COMMIT_HASH}'
+                sh 'docker push charlesfc001/compiler:${GIT_COMMIT_HASH}'
             }
         }
         stage('DeployToDev') {
             steps {
-                sh 'docker-compose -f docker-compose.cj.yaml up -d'
+                // SH 'echo TAG_VERSION=${GIT_COMMIT_HASH} > .env.version'                
+                sh 'echo ${TAG_VERSION}'                
+                sh 'export TAG_VERSION=${GIT_COMMIT_HASH} && docker-compose -f docker-compose.cj.yaml up -d'
             }
         }
         stage('DeployToAUTO') {
             steps {
-                // sh 'scp docker-compose.cj.yaml $TARGET_HOST:docker-compose.yml'
-                sh 'DOCKER_HOST=ssh://$TARGET_HOST docker-compose -f docker-compose.cj.yaml up -d'
+                sh 'DOCKER_HOST=ssh://$TARGET_HOST export TAG_VERSION=${GIT_COMMIT_HASH} && docker-compose -f docker-compose.cj.yaml up -d'
             }
         }
     } 
     post {
         always {
-            // sh 'echo clean dangling images'
-            // sh 'docker image prune -a'
             sh 'docker rmi $(docker images -f "dangling=true" -q)'
         }
     }
