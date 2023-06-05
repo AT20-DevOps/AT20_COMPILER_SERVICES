@@ -66,8 +66,9 @@ pipeline {
             steps {
                 // SH 'echo TAG_VERSION=${GIT_COMMIT_HASH} > .env.version'                
                 sh 'echo ${TAG_VERSION}'
-                sh 'export TAG_VERSION=${GIT_COMMIT_HASH}'
-                sh 'docker-compose -f docker-compose.cj.yaml up -d'
+                // sh 'export TAG_VERSION=${GIT_COMMIT_HASH}'
+                // sh 'docker-compose -f docker-compose.cj.yaml up -d'
+                sh 'export TAG_VERSION && docker-compose -f docker-compose.cj.yaml up -d'
             }
         }
         stage('DeployToAUTO') {
