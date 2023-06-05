@@ -1,7 +1,7 @@
 format_version: 10
 pipelines:
   Test1:
-    group: AT20Group-maria
+    group: AT20-maria
     label_template: ${COUNT}
     lock_behavior: none
     display_order: -1
