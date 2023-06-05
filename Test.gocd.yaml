@@ -1,21 +1,18 @@
 format_version: 10
 pipelines:
-  Test1:
-    group: at20
-    template: pipeline
+  Test:
+    group: at20Group
     label_template: ${COUNT}
     lock_behavior: none
     display_order: -1
     materials:
-      git-0b6196e:
+      git-de9e633:
         git: https://github.com/AT20-DevOps/AT20_COMPILER_SERVICES.git
-        username: cjflores1
         shallow_clone: false
         auto_update: true
         branch: task9-cj
-        encrypted_password: AES:csjDYJSI0Qvv4z56FRSwpw==:Uqm5myeRMLopOroovCee5Q==
     stages:
-    - Test:
+    - Test1:
         fetch_materials: true
         keep_artifacts: false
         clean_workspace: false
@@ -23,13 +20,12 @@ pipelines:
           type: success
           allow_only_on_success: false
         jobs:
-          unit-test:
+          unit_tests:
             timeout: 0
             tasks:
             - exec:
                 arguments:
-                - hello
-                - world
+                - Unit_tests
                 command: echo
                 run_if: passed
           code_coverage:
@@ -37,10 +33,10 @@ pipelines:
             tasks:
             - exec:
                 arguments:
-                - -la
-                command: ls
+                - Code_coverage
+                command: echo
                 run_if: passed
-    - code-inspection:
+    - Code-inspection:
         fetch_materials: true
         keep_artifacts: false
         clean_workspace: false
@@ -53,6 +49,6 @@ pipelines:
             tasks:
             - exec:
                 arguments:
-                - sonar-scanner comand h
+                - sonar-scanner command here
                 command: echo
                 run_if: passed
