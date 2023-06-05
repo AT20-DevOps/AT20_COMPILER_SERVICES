@@ -4,6 +4,8 @@ pipeline {
         DOCKER_PASS = credentials('docker_pass_mh')
         SONAR_TOKEN = credentials('sonar_token')
         TARGET_HOST = '192.168.56.61'
+        GIT_COMMIT_HASH = sh (script: "git rev-parse --short HEAD", returnStdout: true)
+        //GIT_COMMIT_HASH = sh (script: "git log -n 1 --pretty=format:'%H'", returnStdout: true)
     }
     stages {
         stage('Test') {
@@ -49,13 +51,13 @@ pipeline {
         stage('Publish') {
             steps {
                 sh 'docker login -u marseonji -p ${DOCKER_PASS}'
-                sh 'docker tag at20_compiler_services marseonji/at20_compiler_service'
-                sh 'docker push marseonji/at20_compiler_service'
+                sh 'docker tag at20_compiler_services marseonji/at20_compiler_service:${GIT_COMMIT_HASH}'
+                sh 'docker push marseonji/at20_compiler_service:${GIT_COMMIT_HASH}'
             }
         }
         stage('DeployToDev') {
             steps {
-                sh 'docker-compose -f docker-compose.mh.yaml up -d'
+                sh 'export TAG_VERSION=${GIT_COMMIT_HASH} && docker-compose -f docker-compose.mh.yaml up -d'
             }
         }
         stage('DeployToAUTO') {
