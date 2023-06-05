@@ -11,7 +11,7 @@ pipelines:
         username: Marseonji
         shallow_clone: false
         auto_update: true
-        branch: task10-mh
+        branch: task9-mh
         encrypted_password: AES:iOG4+PPKZyh4/gTc8F/mxw==:/eW/Yo3kugXI2MH0NEjbDQ==
     stages:
     - test:
