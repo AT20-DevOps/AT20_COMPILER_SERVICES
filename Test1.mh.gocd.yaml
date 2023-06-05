@@ -11,7 +11,7 @@ pipelines:
         username: Marseonji
         shallow_clone: false
         auto_update: true
-        branch: task9-mh
+        branch: task10-mh
         encrypted_password: AES:iOG4+PPKZyh4/gTc8F/mxw==:/eW/Yo3kugXI2MH0NEjbDQ==
     stages:
     - test:
@@ -24,13 +24,16 @@ pipelines:
         jobs:
           unit-test:
             timeout: 0
+            resources:
+            - ubuntu
             tasks:
-            - exec:
-                arguments:
-                - hello
-                - world
-                command: echo
-                run_if: passed
+            - script: |
+                npm install
+                npm test
+            artifacts:
+            - build:
+                source: tests/report/report.html
+                destination: html_report
           code_coverage:
             timeout: 0
             tasks:
@@ -49,6 +52,8 @@ pipelines:
         jobs:
           sonar:
             timeout: 0
+            resources:
+            - ubuntu
             tasks:
             - exec:
                 arguments:
