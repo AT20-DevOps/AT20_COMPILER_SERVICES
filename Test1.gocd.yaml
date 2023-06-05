@@ -1,6 +1,6 @@
 format_version: 10
 pipelines:
-  Test:
+  Test1:
     group: at20Group
     label_template: ${COUNT}
     lock_behavior: none
@@ -12,7 +12,7 @@ pipelines:
         auto_update: true
         branch: task9-cj
     stages:
-    - Test1:
+    - Test:
         fetch_materials: true
         keep_artifacts: false
         clean_workspace: false
