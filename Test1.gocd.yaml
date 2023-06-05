@@ -10,7 +10,7 @@ pipelines:
         git: https://github.com/AT20-DevOps/AT20_COMPILER_SERVICES.git
         shallow_clone: false
         auto_update: true
-        branch: task9-cj
+        branch: task10-cj
     stages:
     - Test:
         fetch_materials: true
