@@ -59,7 +59,6 @@ pipeline {
                 sh 'docker login -u charlesfc001 -p ${DOCKER_PASS}'
                 sh 'docker tag compiler charlesfc001/compiler:${GIT_COMMIT_HASH}'
                 sh 'docker push charlesfc001/compiler:${GIT_COMMIT_HASH}'
-                sh 'echo ${GIT_COMMIT_HASH}'
             }
         }
         stage('DeployToDev') {
@@ -68,7 +67,7 @@ pipeline {
                 sh 'echo ${TAG_VERSION}'
                 // sh 'export TAG_VERSION=${GIT_COMMIT_HASH}'
                 // sh 'docker-compose -f docker-compose.cj.yaml up -d'
-                sh 'export TAG_VERSION && docker-compose -f docker-compose.cj.yaml up -d'
+                sh 'export TAG_VERSION=${GIT_COMMIT_HASH} && docker-compose -f docker-compose.cj.yaml up -d'
             }
         }
         stage('DeployToAUTO') {
