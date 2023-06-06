@@ -22,6 +22,8 @@ pipelines:
         jobs:
           unit_tests:
             timeout: 0
+            resources:
+            - ubuntu
             tasks:
             - exec:
                 arguments:
