@@ -28,6 +28,13 @@ pipelines:
             - script: |
                 npm install
                 npm run test
+            artifacts:
+            - test:
+                source: tests/report/*.xml
+                destination: xml_report
+            - build:
+                source: tests/report/report.html
+                destination: html_report
           code_coverage:
             timeout: 0
             tasks:
