@@ -6,9 +6,7 @@ pipelines:
     lock_behavior: none
     display_order: -1
     environment_variables:
-      GIT_COMMIT_HASH:
-      - script: |
-          git rev-parse --short HEAD
+      GIT_COMMIT_HASH: 1.2
     secure_variables:
       SONAR_TOKEN: AES:XfNFku9pjEjasE/gu7wC3A==:uMGyzeIr1TyT+XU1eMIuQV5UFna/F/cMhmoAAEOvz7Ib0O5rQ3+iJ7QBnFrSEr3O
       DOCKER_PASS: AES:gLBQlMYgOM7npy9Cxl8u+g==:qxcHj4m/hVQSanq5QTtsvg==
