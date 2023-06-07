@@ -5,12 +5,17 @@ pipelines:
     label_template: ${COUNT}
     lock_behavior: none
     display_order: -1
+    environment_variables:
+      GIT_COMMIT_HASH: 1.2
+    secure_variables:
+      SONAR_TOKEN: AES:XfNFku9pjEjasE/gu7wC3A==:uMGyzeIr1TyT+XU1eMIuQV5UFna/F/cMhmoAAEOvz7Ib0O5rQ3+iJ7QBnFrSEr3O
+      DOCKER_PASS: AES:gLBQlMYgOM7npy9Cxl8u+g==:qxcHj4m/hVQSanq5QTtsvg==
     materials:
       git-de9e633:
         git: https://github.com/AT20-DevOps/AT20_COMPILER_SERVICES.git
         shallow_clone: false
         auto_update: true
-        branch: task10-cj
+        branch: task11-cj
     stages:
     - Test:
         fetch_materials: true
@@ -35,14 +40,6 @@ pipelines:
             - build:
                 source: tests/report/report.html
                 destination: html_report
-          code_coverage:
-            timeout: 0
-            tasks:
-            - exec:
-                arguments:
-                - Code_coverage
-                command: echo
-                run_if: passed
     - Code-inspection:
         fetch_materials: true
         keep_artifacts: false
@@ -53,9 +50,26 @@ pipelines:
         jobs:
           sonar:
             timeout: 0
+            resources:
+            - ubuntu
             tasks:
-            - exec:
-                arguments:
-                - sonar-scanner command here
-                command: echo
-                run_if: passed
+            - script: |
+                  /godata/.sonar/sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner -Dsonar.organization=at20-cj -Dsonar.projectKey=at20-cj -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io
+    - PackageAndPublish:
+        fetch_materials: true
+        keep_artifacts: false
+        clean_workspace: false
+        approval:
+          type: success
+          allow_only_on_success: false
+        jobs:
+          package_publish:
+            timeout: 0
+            resources:
+            - docker
+            tasks:
+            - script: |
+                  docker build -t compiler .
+                  docker login -u charlesfc001 -p ${DOCKER_PASS}
+                  docker tag compiler charlesfc001/compiler:${GIT_COMMIT_HASH}
+                  docker push charlesfc001/compiler:${GIT_COMMIT_HASH}
