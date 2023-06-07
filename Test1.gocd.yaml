@@ -39,7 +39,7 @@ pipelines:
             - build:
                 source: tests/report/report.html
                 destination: html_report
-            - dockerfile:
+            - build:
                 source: Dockerfile
     - Code-inspection:
         fetch_materials: true
