@@ -71,12 +71,12 @@ pipelines:
             resources:
             - docker
             tasks:
-            - fetch:
-              is_file: true
-              source: Dockerfile
-              stage: Test
-              job: unit_tests
-              run_if: passed
+            # - fetch:
+            #   is_file: true
+            #   source: Dockerfile
+            #   stage: Test
+            #   job: unit_tests
+            #   run_if: passed
             - script: |
                   ls -al
                   echo docker build -t compiler .
