@@ -72,6 +72,7 @@ pipelines:
             - fetch:
               is_file: true
               source: Dockerfile
+              stage: Test
               job: unit_test
               run_if: passed
             - script: |
