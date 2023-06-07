@@ -5,13 +5,18 @@ pipelines:
     label_template: ${COUNT}
     lock_behavior: none
     display_order: -1
+    environment_variables:
+      GIT_COMMIT_HASH: 1.2
+    secure_variables:
+      SONAR_TOKEN: AES:LZt0rstkTwgXO+M8iI6aCw==:syDt5UJypZJHtc0Azj2kWM3uOp4PKpBkO20N2zrXTERWk7qqyNt4kbA8DJ7D+oGo
+      DOCKER_PASS: AES:Yom6v3AaajlescW3qEyIvg==:brxe3lf8ofDY0F9XJMkqGQ==
     materials:
       git-eebe0ef:
         git: https://github.com/AT20-DevOps/AT20_COMPILER_SERVICES.git
         username: Marseonji
         shallow_clone: false
         auto_update: true
-        branch: task10-mh
+        branch: task11-mh
         encrypted_password: AES:LJ4IAUFK4W+7NrC9EtW+2g==:zIDUwoH7olFG3z9p14+WfA==
     stages:
     - test:
@@ -34,16 +39,8 @@ pipelines:
             - build:
                 source: tests/report/report.html
                 destination: html_report
-          code-coverage:
-            timeout: 0
-            tasks:
-            - exec:
-                arguments:
-                - -la
-                command: ls
-                run_if: passed
     - code_inspection:
-        fetch_materials: true
+        fetch_materials: false
         keep_artifacts: false
         clean_workspace: false
         approval:
@@ -55,8 +52,28 @@ pipelines:
             resources:
             - ubuntu
             tasks:
-            - exec:
-                arguments:
-                - sonar-scanner command here
-                command: echo
-                run_if: passed
+            - script: |
+                ls -la
+                /godata/.sonar/sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner \
+                        -Dsonar.organization=at20-mh \
+                        -Dsonar.projectKey=at20-mh \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=https://sonarcloud.io
+    - PackageAndPublish:
+        fetch_materials: false
+        keep_artifacts: false
+        clean_workspace: false
+        approval:
+          type: success
+          allow_only_on_success: false
+        jobs:
+          PackageAndPublish:
+            timeout: 0
+            resources:
+            - docker
+            tasks:
+            - script: |
+                docker build -t at20_compiler_services .
+                docker login -u marseonji -p ${DOCKER_PASS}
+                docker tag at20_compiler_services marseonji/at20_compiler_service:${GIT_COMMIT_HASH}
+                docker push marseonji/at20_compiler_service:${GIT_COMMIT_HASH}
