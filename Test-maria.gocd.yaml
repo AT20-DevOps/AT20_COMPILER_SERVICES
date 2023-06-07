@@ -1,18 +1,18 @@
 format_version: 10
 pipelines:
-  Test1:
-    group: AT20Group
+  Test-maria:
+    group: AT20-maria
     label_template: ${COUNT}
     lock_behavior: none
     display_order: -1
     materials:
-      git-e20be13:
+      git-eebe0ef:
         git: https://github.com/AT20-DevOps/AT20_COMPILER_SERVICES.git
         username: Marseonji
         shallow_clone: false
         auto_update: true
-        branch: task9-mh
-        encrypted_password: AES:iOG4+PPKZyh4/gTc8F/mxw==:/eW/Yo3kugXI2MH0NEjbDQ==
+        branch: task10-mh
+        encrypted_password: AES:LJ4IAUFK4W+7NrC9EtW+2g==:zIDUwoH7olFG3z9p14+WfA==
     stages:
     - test:
         fetch_materials: true
@@ -24,14 +24,17 @@ pipelines:
         jobs:
           unit-test:
             timeout: 0
+            resources:
+            - ubuntu 
             tasks:
-            - exec:
-                arguments:
-                - hello
-                - world
-                command: echo
-                run_if: passed
-          code_coverage:
+            - script: |
+                npm install
+                npm test
+            artifacts:
+            - build:
+                source: tests/report/report.html
+                destination: html_report
+          code-coverage:
             timeout: 0
             tasks:
             - exec:
@@ -49,6 +52,8 @@ pipelines:
         jobs:
           sonar:
             timeout: 0
+            resources:
+            - ubuntu
             tasks:
             - exec:
                 arguments:
