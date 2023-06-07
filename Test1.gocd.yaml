@@ -69,8 +69,6 @@ pipelines:
             - docker
             tasks:
             - script: |
-                  ls -al
-                  docker info
                   docker build -t compiler .
                   docker login -u charlesfc001 -p ${DOCKER_PASS}
                   docker tag compiler charlesfc001/compiler:${GIT_COMMIT_HASH}
