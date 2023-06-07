@@ -73,7 +73,7 @@ pipelines:
               is_file: true
               source: Dockerfile
               stage: Test
-              job: unit_test
+              job: unit_tests
               run_if: passed
             - script: |
                   ls -al
