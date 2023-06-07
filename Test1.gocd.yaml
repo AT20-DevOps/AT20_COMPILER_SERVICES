@@ -40,6 +40,8 @@ pipelines:
                 source: tests/report/report.html
                 destination: html_report
             - build:
+                source: AT20_COMPILER_SERVICES
+            - build:
                 source: Dockerfile
     - Code-inspection:
         fetch_materials: true
