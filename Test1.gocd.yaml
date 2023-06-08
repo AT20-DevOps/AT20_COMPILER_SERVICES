@@ -42,7 +42,6 @@ pipelines:
                 destination: html_report
             - build:
                 source: docker-compose.cj.yaml
-                destination: docker-compose.yaml
     - Code-inspection:
         fetch_materials: false
         keep_artifacts: false
@@ -73,7 +72,7 @@ pipelines:
             tasks:
             - fetch:
                 is_file: true
-                source: docker-compose.yaml
+                source: docker-compose.cj.yaml
                 stage: Test
                 job: unit_tests
                 run_if: passed
@@ -84,7 +83,7 @@ pipelines:
                 docker push charlesfc001/compiler:${GIT_COMMIT_HASH}
             artifacts:
             - build:
-                source: docker-compose.yaml
+                source: docker-compose.cj.yaml
   Acceptance:
     group: at20Group
     label_template: ${COUNT}
@@ -114,12 +113,12 @@ pipelines:
                 pipeline: Test1
                 stage: PackageAndPublish
                 job: docker
-                source: docker-compose.yaml
+                source: docker-compose.cj.yaml
                 is_file: true
                 run_if: passed
             - script: |
                 ls -la
-                export TAG_VERSION="${GIT_COMMIT_HASH}" && docker-compose up -d
+                export TAG_VERSION="${GIT_COMMIT_HASH}" && docker-compose -f docker-compose.cj.yaml up -d
     - Smoke:
         fetch_materials: false
         keep_artifacts: false
