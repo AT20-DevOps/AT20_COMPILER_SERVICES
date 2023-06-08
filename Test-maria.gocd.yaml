@@ -93,5 +93,4 @@ pipelines:
                 docker login -u marseonji -p ${DOCKER_PASS}
                 docker tag at20_compiler_services marseonji/at20_compiler_service:${GIT_COMMIT_HASH}
                 docker push marseonji/at20_compiler_service:${GIT_COMMIT_HASH}
-            artifacts:
-              source: docker-compose.mh.yaml
+            
