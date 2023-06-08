@@ -15,7 +15,7 @@ pipelines:
         git: https://github.com/AT20-DevOps/AT20_COMPILER_SERVICES.git
         shallow_clone: false
         auto_update: true
-        branch: task11-cj
+        branch: task12-cj
     stages:
     - Test:
         fetch_materials: true
@@ -40,6 +40,8 @@ pipelines:
             - build:
                 source: tests/report/report.html
                 destination: html_report
+            - build:
+                source: docker-compose.yaml
     - Code-inspection:
         fetch_materials: true
         keep_artifacts: false
@@ -56,20 +58,29 @@ pipelines:
             - script: |
                   /godata/.sonar/sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner -Dsonar.organization=at20-cj -Dsonar.projectKey=at20-cj -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io
     - PackageAndPublish:
-        fetch_materials: true
+        fetch_materials: false
         keep_artifacts: false
         clean_workspace: false
         approval:
           type: success
           allow_only_on_success: false
         jobs:
-          package_publish:
+          docker:
             timeout: 0
             resources:
             - docker
             tasks:
+            - fetch:
+                is_file: true
+                source: docker-compose.yaml
+                stage: Test
+                job: unit_tests
+                run_if: passed
             - script: |
                   docker build -t compiler .
                   docker login -u charlesfc001 -p ${DOCKER_PASS}
                   docker tag compiler charlesfc001/compiler:${GIT_COMMIT_HASH}
                   docker push charlesfc001/compiler:${GIT_COMMIT_HASH}
+            artifacts:
+            - build:
+                source: docker-compose.yaml
