@@ -40,8 +40,8 @@ pipelines:
             - build:
                 source: tests/report/report.html
                 destination: html_report
-            - build:
-                source: docker-compose.yaml
+            # - build:
+            #     source: docker-compose.yaml
     - Code-inspection:
         fetch_materials: true
         keep_artifacts: false
