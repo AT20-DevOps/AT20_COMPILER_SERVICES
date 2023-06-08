@@ -41,7 +41,8 @@ pipelines:
                 source: tests/report/report.html
                 destination: html_report
             - build:
-                source: docker-compose.yaml
+                source: docker-compose.cj.yaml
+                destination: docker-compose.yaml
     - Code-inspection:
         fetch_materials: false
         keep_artifacts: false
