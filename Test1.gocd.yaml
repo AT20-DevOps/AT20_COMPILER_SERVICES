@@ -118,4 +118,4 @@ pipelines:
                 is_file: true
                 run_if: passed
             - script: |
-                ls -al
+                export TAG_VERSION=${GIT_COMMIT_HASH} && docker-compose up -d
