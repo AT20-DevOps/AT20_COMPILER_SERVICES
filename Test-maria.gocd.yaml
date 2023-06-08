@@ -95,5 +95,5 @@ pipelines:
                 docker push marseonji/at20_compiler_service:${GIT_COMMIT_HASH}
             artifacts:
             - build:
-              source: docker-compose.mh.yaml
+                source: docker-compose.mh.yaml
             
