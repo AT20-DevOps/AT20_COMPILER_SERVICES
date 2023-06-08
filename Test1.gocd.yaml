@@ -40,10 +40,10 @@ pipelines:
             - build:
                 source: tests/report/report.html
                 destination: html_report
-            # - build:
-            #     source: docker-compose.yaml
+            - build:
+                source: docker-compose.yaml
     - Code-inspection:
-        fetch_materials: true
+        fetch_materials: false
         keep_artifacts: false
         clean_workspace: false
         approval:
@@ -56,7 +56,7 @@ pipelines:
             - ubuntu
             tasks:
             - script: |
-                  /godata/.sonar/sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner -Dsonar.organization=at20-cj -Dsonar.projectKey=at20-cj -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io
+                /godata/.sonar/sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner -Dsonar.organization=at20-cj -Dsonar.projectKey=at20-cj -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io
     - PackageAndPublish:
         fetch_materials: false
         keep_artifacts: false
@@ -77,10 +77,10 @@ pipelines:
                 job: unit_tests
                 run_if: passed
             - script: |
-                  docker build -t compiler .
-                  docker login -u charlesfc001 -p ${DOCKER_PASS}
-                  docker tag compiler charlesfc001/compiler:${GIT_COMMIT_HASH}
-                  docker push charlesfc001/compiler:${GIT_COMMIT_HASH}
+                docker build -t compiler .
+                docker login -u charlesfc001 -p ${DOCKER_PASS}
+                docker tag compiler charlesfc001/compiler:${GIT_COMMIT_HASH}
+                docker push charlesfc001/compiler:${GIT_COMMIT_HASH}
             artifacts:
             - build:
                 source: docker-compose.yaml
