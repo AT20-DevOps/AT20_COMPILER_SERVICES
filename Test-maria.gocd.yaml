@@ -16,7 +16,7 @@ pipelines:
         username: Marseonji
         shallow_clone: false
         auto_update: true
-        branch: task11-mh
+        branch: task12-mh
         encrypted_password: AES:LJ4IAUFK4W+7NrC9EtW+2g==:zIDUwoH7olFG3z9p14+WfA==
     stages:
     - test:
@@ -39,6 +39,10 @@ pipelines:
             - build:
                 source: tests/report/report.html
                 destination: html_report
+            - build:
+                source: Dockerfile
+            - build:
+                source: docker-compose.mh.yaml
     - code_inspection:
         fetch_materials: false
         keep_artifacts: false
@@ -72,8 +76,75 @@ pipelines:
             resources:
             - docker
             tasks:
+            - fetch:
+                is_file: true
+                source: Dockerfile
+                stage: test
+                job: unit-test
+                run_if: passed
+            - fetch:
+                is_file: true
+                source: docker-compose.mh.yaml
+                stage: Test
+                job: unit-test
+                run_if: passed
             - script: |
                 docker build -t at20_compiler_services .
                 docker login -u marseonji -p ${DOCKER_PASS}
                 docker tag at20_compiler_services marseonji/at20_compiler_service:${GIT_COMMIT_HASH}
                 docker push marseonji/at20_compiler_service:${GIT_COMMIT_HASH}
+            artifacts:
+            - build:
+                source: docker-compose.mh.yaml
+
+  Acceptance:
+    group: AT20-maria
+    label_template: ${COUNT}
+    lock_behavior: none
+    display_order: -1
+    environment_variables:
+      GIT_COMMIT_HASH: 1.2
+    materials:
+      Test-maria:
+        pipeline: Test-maria
+        stage: PackageAndPublish
+    stages:
+    - DeployToDev:
+        fetch_materials: false
+        keep_artifacts: false
+        clean_workspace: false
+        approval:
+          type: success
+          allow_only_on_success: false
+        jobs:
+          deployToDev:
+            timeout: 0
+            resources:
+            - docker 
+            tasks:
+            - fetch:
+                pipeline: Test-maria
+                stage: PackageAndPublish
+                job: PackageAndPublish
+                source: docker-compose.mh.yaml
+                is_file: true
+                run_if: passed
+            - script: |
+                echo deploy here
+                ls -la
+                export TAG_VERSION=${GIT_COMMIT_HASH} && docker-compose -f docker-compose.mh.yaml up -d
+    - Smoke:
+        fetch_materials: false
+        keep_artifacts: false
+        clean_workspace: false
+        approval:
+          type: success
+          allow_only_on_success: false
+        jobs:
+          test:
+            timeout: 0
+            resources:
+            - docker
+            tasks:
+            - script: |
+                echo command to run smoke test
