@@ -6,7 +6,7 @@ pipelines:
     lock_behavior: none
     display_order: -1
     environment_variables:
-      GIT_COMMIT_HASH: 1.2
+      GIT_COMMIT_HASH: (script: "git rev-parse --short HEAD", returnStdout: true).trim()
     secure_variables:
       SONAR_TOKEN: AES:LZt0rstkTwgXO+M8iI6aCw==:syDt5UJypZJHtc0Azj2kWM3uOp4PKpBkO20N2zrXTERWk7qqyNt4kbA8DJ7D+oGo
       DOCKER_PASS: AES:Yom6v3AaajlescW3qEyIvg==:brxe3lf8ofDY0F9XJMkqGQ==
@@ -16,7 +16,7 @@ pipelines:
         username: Marseonji
         shallow_clone: false
         auto_update: true
-        branch: task12-mh
+        branch: task13-mh
         encrypted_password: AES:LJ4IAUFK4W+7NrC9EtW+2g==:zIDUwoH7olFG3z9p14+WfA==
     stages:
     - test:
@@ -33,6 +33,8 @@ pipelines:
             - ubuntu 
             tasks:
             - script: |
+                echo ${GIT_COMMIT_HASH} > commit.txt
+                cat file.txt
                 npm install
                 npm test
             artifacts:
