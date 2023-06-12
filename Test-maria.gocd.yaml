@@ -6,7 +6,7 @@ pipelines:
     lock_behavior: none
     display_order: -1
     environment_variables:
-      GIT_COMMIT_HASH: git rev-parse --short HEAD
+      GIT_COMMIT_HASH: 1.0
     secure_variables:
       SONAR_TOKEN: AES:LZt0rstkTwgXO+M8iI6aCw==:syDt5UJypZJHtc0Azj2kWM3uOp4PKpBkO20N2zrXTERWk7qqyNt4kbA8DJ7D+oGo
       DOCKER_PASS: AES:Yom6v3AaajlescW3qEyIvg==:brxe3lf8ofDY0F9XJMkqGQ==
@@ -33,10 +33,8 @@ pipelines:
             - ubuntu 
             tasks:
             - script: |
-                export GIT_COMMIT_HASH=git rev-parse --short HEAD
-                echo ${GIT_COMMIT_HASH} > commit.txt
+                git rev-parse --short HEAD > commit.txt
                 cat commit.txt
-                ls -la
                 npm install
                 npm test
             artifacts:
@@ -47,6 +45,8 @@ pipelines:
                 source: Dockerfile
             - build:
                 source: docker-compose.mh.yaml
+            - build:
+                source: commit.txt
     - code_inspection:
         fetch_materials: false
         keep_artifacts: false
@@ -92,7 +92,15 @@ pipelines:
                 stage: Test
                 job: unit-test
                 run_if: passed
+            - fetch:
+                is_file: true
+                source: commit.txt
+                stage: Test
+                job: unit-test
+                run_if: passed
             - script: |
+                export GIT_COMMIT_HASH < commit.txt
+                echo ${GIT_COMMIT_HASH}
                 docker build -t at20_compiler_services .
                 docker login -u marseonji -p ${DOCKER_PASS}
                 docker tag at20_compiler_services marseonji/at20_compiler_service:${GIT_COMMIT_HASH}
