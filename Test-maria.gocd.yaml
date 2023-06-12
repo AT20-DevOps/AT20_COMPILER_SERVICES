@@ -33,6 +33,7 @@ pipelines:
             - ubuntu 
             tasks:
             - script: |
+                export GIT_COMMIT_HASH=git rev-parse --short HEAD
                 echo ${GIT_COMMIT_HASH} > commit.txt
                 cat commit.txt
                 ls -la
