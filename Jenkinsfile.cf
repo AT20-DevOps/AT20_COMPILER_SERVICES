@@ -68,7 +68,7 @@ pipeline {
         }
         stage('DeployToAUTO') {
             steps {
-                sh 'DOCKER_HOST=ssh://$TARGET_HOST export TAG_VERSION=${GIT_COMMIT_HASH} && docker-compose up -d'
+                sh 'export TAG_VERSION=${GIT_COMMIT_HASH} && DOCKER_HOST=ssh://$TARGET_HOST && docker-compose up -d'
             }
         }
     } 
