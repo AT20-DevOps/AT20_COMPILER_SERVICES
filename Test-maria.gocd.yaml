@@ -34,6 +34,7 @@ pipelines:
             tasks:
             - script: |
                 git rev-parse --short HEAD > commit.txt
+                export GIT_COMMIT_HASH=$(cat commit.txt)
                 cat commit.txt
                 npm install
                 npm test
@@ -99,7 +100,7 @@ pipelines:
                 job: unit-test
                 run_if: passed
             - script: |
-                export GIT_COMMIT_HASH < commit.txt
+                export GIT_COMMIT_HASH=$(cat commit.txt)
                 echo ${GIT_COMMIT_HASH}
                 docker build -t at20_compiler_services .
                 docker login -u marseonji -p ${DOCKER_PASS}
@@ -151,7 +152,7 @@ pipelines:
             - script: |
                 echo deploy here
                 ls -la
-                export GIT_COMMIT_HASH < commit.txt
+                export GIT_COMMIT_HASH=$(cat commit.txt)
                 echo ${GIT_COMMIT_HASH}
                 export TAG_VERSION=${GIT_COMMIT_HASH} && docker-compose -f docker-compose.mh.yaml up -d
     - Smoke:
@@ -211,8 +212,8 @@ pipelines:
                 is_file: true
                 run_if: passed
             - script: |
-                export GIT_COMMIT_HASH < commit.txt
+                export GIT_COMMIT_HASH=$(cat commit.txt)
                 echo ${GIT_COMMIT_HASH}
-                TAG_VERSION=${GIT_COMMIT_HASH} 
+                export TAG_VERSION=${GIT_COMMIT_HASH} 
                 echo $(TAG_VERSION)
                 DOCKER_HOST=ssh://$TARGET_HOST docker-compose -f docker-compose.mh.yaml up -d
