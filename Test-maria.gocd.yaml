@@ -178,7 +178,7 @@ pipelines:
     display_order: -1
     environment_variables:
       GIT_COMMIT_HASH: 1.2
-      TARGET_HOST: 192.168.0.12
+      TARGET_HOST: 192.168.0.13
     materials:
       Test-maria:
         pipeline: Test-maria
