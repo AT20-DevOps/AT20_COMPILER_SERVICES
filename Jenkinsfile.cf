@@ -72,10 +72,19 @@ pipeline {
     }
     post {
         always {
-            emailext body: 'A Test EMail',
-            subject: 'Test',
-            to: 'charlesflorescalle@gmail.com'
             sh 'docker rmi $(docker images -f "dangling=true" -q)'
+        }
+        success {
+            emailext body: 'Successful build (COMPILER_SERVICE)',
+            subject: 'SUCCESSFUL',
+            to: 'charlesflorescalle@gmail.com',
+            attachLog: true
+        }
+        failure {
+            emailext body: 'Failed build (COMPILER_SERVICE)',
+            subject: 'FAILED',
+            to: 'charlesflorescalle@gmail.com',
+            attachLog: true
         }
     }
 }
