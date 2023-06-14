@@ -75,14 +75,7 @@ pipeline {
             emailext body: 'A Test EMail',
             subject: 'Test',
             to: 'adm.mail07@gmail.com'
-        }
-        always {
             sh 'docker rmi $(docker images -f "dangling=true" -q)'
         }
     }
-    // post {
-    //     always {
-    //         sh 'docker rmi $(docker images -f "dangling=true" -q)'
-    //     }
-    // }
 }
