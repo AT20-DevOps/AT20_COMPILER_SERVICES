@@ -154,7 +154,12 @@ pipelines:
                 ls -la
                 export GIT_COMMIT_HASH=$(cat commit.txt)
                 echo ${GIT_COMMIT_HASH}
-                export TAG_VERSION=${GIT_COMMIT_HASH} && docker-compose -f docker-compose.mh.yaml up -d
+                export TAG_VERSION=${GIT_COMMIT_HASH} && docker-compose -f docker-compose.mh.yaml up -
+            artifacts:
+            - build:
+                source: docker-compose.mh.yaml
+            - build:
+                source: commit.txt
     - Smoke:
         fetch_materials: false
         keep_artifacts: false
@@ -178,11 +183,11 @@ pipelines:
     display_order: -1
     environment_variables:
       GIT_COMMIT_HASH: 1.2
-      TARGET_HOST: 192.168.0.13
+      TARGET_HOST: 192.168.0.16
     materials:
-      Test-maria:
-        pipeline: Test-maria
-        stage: PackageAndPublish
+      Acceptance:
+        pipeline: Acceptance
+        stage: DeployToDev
     stages:
     - DeployToAUTO:
         fetch_materials: false
@@ -198,16 +203,16 @@ pipelines:
             - docker 
             tasks:
             - fetch:
-                pipeline: Test-maria
-                stage: PackageAndPublish
-                job: PackageAndPublish
+                pipeline: Acceptance
+                stage: DeployToDev
+                job: deployToDev
                 source: docker-compose.mh.yaml
                 is_file: true
                 run_if: passed
             - fetch:
-                pipeline: Test-maria
-                stage: Test
-                job: unit-test
+                pipeline: Acceptance
+                stage: DeployToDev
+                job: deployToDev
                 source: commit.txt
                 is_file: true
                 run_if: passed
@@ -215,5 +220,22 @@ pipelines:
                 export GIT_COMMIT_HASH=$(cat commit.txt)
                 echo ${GIT_COMMIT_HASH}
                 export TAG_VERSION=${GIT_COMMIT_HASH} 
+                echo entra
                 echo $(TAG_VERSION)
                 DOCKER_HOST=ssh://$TARGET_HOST docker-compose -f docker-compose.mh.yaml up -d
+                echo termina
+    - capacityTesting:
+        fetch_materials: false
+        keep_artifacts: false
+        clean_workspace: false
+        approval:
+          type: success
+          allow_only_on_success: false
+        jobs:
+          capacityTest:
+            timeout: 0
+            resources:
+            - docker
+            tasks:
+            - script: |
+                echo command here to run integration testing
