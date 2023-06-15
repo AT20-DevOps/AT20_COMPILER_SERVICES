@@ -6,7 +6,7 @@ pipelines:
     lock_behavior: none
     display_order: -1
     environment_variables:
-      GIT_COMMIT_HASH: 1.2
+      GIT_COMMIT_HASH: 1.0
     secure_variables:
       SONAR_TOKEN: AES:LZt0rstkTwgXO+M8iI6aCw==:syDt5UJypZJHtc0Azj2kWM3uOp4PKpBkO20N2zrXTERWk7qqyNt4kbA8DJ7D+oGo
       DOCKER_PASS: AES:Yom6v3AaajlescW3qEyIvg==:brxe3lf8ofDY0F9XJMkqGQ==
@@ -16,7 +16,7 @@ pipelines:
         username: Marseonji
         shallow_clone: false
         auto_update: true
-        branch: task12-mh
+        branch: task13-mh
         encrypted_password: AES:LJ4IAUFK4W+7NrC9EtW+2g==:zIDUwoH7olFG3z9p14+WfA==
     stages:
     - test:
@@ -33,6 +33,7 @@ pipelines:
             - ubuntu 
             tasks:
             - script: |
+                git rev-parse --short HEAD > commit.txt
                 npm install
                 npm test
             artifacts:
@@ -43,6 +44,8 @@ pipelines:
                 source: Dockerfile
             - build:
                 source: docker-compose.mh.yaml
+            - build:
+                source: commit.txt
     - code_inspection:
         fetch_materials: false
         keep_artifacts: false
@@ -57,7 +60,6 @@ pipelines:
             - ubuntu
             tasks:
             - script: |
-                ls -la
                 /godata/.sonar/sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner \
                         -Dsonar.organization=at20-mh \
                         -Dsonar.projectKey=at20-mh \
@@ -88,7 +90,14 @@ pipelines:
                 stage: Test
                 job: unit-test
                 run_if: passed
+            - fetch:
+                is_file: true
+                source: commit.txt
+                stage: Test
+                job: unit-test
+                run_if: passed
             - script: |
+                export GIT_COMMIT_HASH=$(cat commit.txt)
                 docker build -t at20_compiler_services .
                 docker login -u marseonji -p ${DOCKER_PASS}
                 docker tag at20_compiler_services marseonji/at20_compiler_service:${GIT_COMMIT_HASH}
@@ -129,10 +138,21 @@ pipelines:
                 source: docker-compose.mh.yaml
                 is_file: true
                 run_if: passed
+            - fetch:
+                pipeline: Test-maria
+                stage: Test
+                job: unit-test
+                source: commit.txt
+                is_file: true
+                run_if: passed
             - script: |
-                echo deploy here
-                ls -la
+                export GIT_COMMIT_HASH=$(cat commit.txt)
                 export TAG_VERSION=${GIT_COMMIT_HASH} && docker-compose -f docker-compose.mh.yaml up -d
+            artifacts:
+            - build:
+                source: docker-compose.mh.yaml
+            - build:
+                source: commit.txt
     - Smoke:
         fetch_materials: false
         keep_artifacts: false
@@ -148,3 +168,65 @@ pipelines:
             tasks:
             - script: |
                 echo command to run smoke test
+
+  Capacity_Testing:
+    group: AT20-maria
+    label_template: ${COUNT}
+    lock_behavior: none
+    display_order: -1
+    environment_variables:
+      GIT_COMMIT_HASH: 1.2
+      TARGET_HOST: 192.168.0.16
+    materials:
+      Acceptance:
+        pipeline: Acceptance
+        stage: DeployToDev
+    stages:
+    - DeployToAUTO:
+        fetch_materials: false
+        keep_artifacts: false
+        clean_workspace: false
+        approval:
+          type: success
+          allow_only_on_success: false
+        jobs:
+          deployToAuto:
+            timeout: 0
+            resources:
+            - docker 
+            tasks:
+            - fetch:
+                pipeline: Acceptance
+                stage: DeployToDev
+                job: deployToDev
+                source: docker-compose.mh.yaml
+                is_file: true
+                run_if: passed
+            - fetch:
+                pipeline: Acceptance
+                stage: DeployToDev
+                job: deployToDev
+                source: commit.txt
+                is_file: true
+                run_if: passed
+            - script: |
+                export GIT_COMMIT_HASH=$(cat commit.txt)
+                export TAG_VERSION=${GIT_COMMIT_HASH} 
+                echo ${TAG_VERSION}
+                DOCKER_HOST=ssh://$TARGET_HOST docker-compose -f docker-compose.mh.yaml up -d
+                echo ${DOCKER_HOST}
+    - capacityTesting:
+        fetch_materials: false
+        keep_artifacts: false
+        clean_workspace: false
+        approval:
+          type: success
+          allow_only_on_success: false
+        jobs:
+          capacityTest:
+            timeout: 0
+            resources:
+            - docker
+            tasks:
+            - script: |
+                echo command here to capacity testing
