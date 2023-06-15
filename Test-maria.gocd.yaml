@@ -34,8 +34,6 @@ pipelines:
             tasks:
             - script: |
                 git rev-parse --short HEAD > commit.txt
-                export GIT_COMMIT_HASH=$(cat commit.txt)
-                cat commit.txt
                 npm install
                 npm test
             artifacts:
@@ -62,7 +60,6 @@ pipelines:
             - ubuntu
             tasks:
             - script: |
-                ls -la
                 /godata/.sonar/sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner \
                         -Dsonar.organization=at20-mh \
                         -Dsonar.projectKey=at20-mh \
@@ -101,7 +98,6 @@ pipelines:
                 run_if: passed
             - script: |
                 export GIT_COMMIT_HASH=$(cat commit.txt)
-                echo ${GIT_COMMIT_HASH}
                 docker build -t at20_compiler_services .
                 docker login -u marseonji -p ${DOCKER_PASS}
                 docker tag at20_compiler_services marseonji/at20_compiler_service:${GIT_COMMIT_HASH}
@@ -150,10 +146,7 @@ pipelines:
                 is_file: true
                 run_if: passed
             - script: |
-                echo deploy here
-                ls -la
                 export GIT_COMMIT_HASH=$(cat commit.txt)
-                echo ${GIT_COMMIT_HASH}
                 export TAG_VERSION=${GIT_COMMIT_HASH} && docker-compose -f docker-compose.mh.yaml up -d
             artifacts:
             - build:
@@ -218,12 +211,10 @@ pipelines:
                 run_if: passed
             - script: |
                 export GIT_COMMIT_HASH=$(cat commit.txt)
-                echo ${GIT_COMMIT_HASH}
                 export TAG_VERSION=${GIT_COMMIT_HASH} 
-                echo entra
-                echo $(TAG_VERSION)
+                echo ${TAG_VERSION}
                 DOCKER_HOST=ssh://$TARGET_HOST docker-compose -f docker-compose.mh.yaml up -d
-                echo termina
+                echo ${DOCKER_HOST}
     - capacityTesting:
         fetch_materials: false
         keep_artifacts: false
@@ -238,4 +229,4 @@ pipelines:
             - docker
             tasks:
             - script: |
-                echo command here to run integration testing
+                echo command here to capacity testing
