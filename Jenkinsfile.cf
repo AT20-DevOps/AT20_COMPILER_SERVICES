@@ -73,6 +73,13 @@ pipeline {
     post {
         always {
             sh 'docker rmi $(docker images -f "dangling=true" -q)'
+            
+            emailext (                
+            subject: 'The Compiler service build was executed with status: ${BUILD_STATUS}',
+            to: 'charlesflorescalle@gmail.com',
+            body: 'Pipeline: ${JOB_NAME}, build: ${BUILD_NUMBER} - has been executed - Status: ${BUILD_STATUS}, for more details go to ${BUILD_URL}',
+            attachLog: true
+            )
         }
     }
 }
