@@ -154,7 +154,7 @@ pipelines:
                 ls -la
                 export GIT_COMMIT_HASH=$(cat commit.txt)
                 echo ${GIT_COMMIT_HASH}
-                export TAG_VERSION=${GIT_COMMIT_HASH} && docker-compose -f docker-compose.mh.yaml up -
+                export TAG_VERSION=${GIT_COMMIT_HASH} && docker-compose -f docker-compose.mh.yaml up -d
             artifacts:
             - build:
                 source: docker-compose.mh.yaml
